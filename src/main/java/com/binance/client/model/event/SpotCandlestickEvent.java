@@ -4,33 +4,23 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.binance.client.constant.BinanceApiConstants;
 
-public class ContinousCandlestickEvent extends CandlestickEvent {
+public class SpotCandlestickEvent extends CandlestickEvent {
 
-  private String pair;
+  private String symbol;
 
-  private String contract;
-
-  public String getPair() {
-    return pair;
+  public String getSymbol() {
+    return symbol;
   }
 
-  public void setPair(String pair) {
-    this.pair = pair;
-  }
-
-  public String getContract() {
-    return contract;
-  }
-
-  public void setContract(String contract) {
-    this.contract = contract;
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, BinanceApiConstants.TO_STRING_BUILDER_STYLE).append("eventType", eventType)
-      .append("eventTime", eventTime).append("pair", pair).append("contract", contract).append("startTime", startTime)
-      .append("closeTime", closeTime).append("interval", interval)
+      .append("eventTime", eventTime).append("symbol", symbol).append("startTime", startTime)
+      .append("closeTime", closeTime).append("symbol", symbol).append("interval", interval)
       .append("firstTradeId", firstTradeId).append("lastTradeId", lastTradeId).append("open", open)
       .append("close", close).append("high", high).append("low", low).append("volume", volume)
       .append("numTrades", numTrades).append("isClosed", isClosed)

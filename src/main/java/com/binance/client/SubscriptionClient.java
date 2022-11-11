@@ -5,7 +5,7 @@ import java.util.List;
 import com.binance.client.impl.BinanceApiInternalFactory;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
-import com.binance.client.model.event.CandlestickEvent;
+import com.binance.client.model.event.SpotCandlestickEvent;
 import com.binance.client.model.event.ContinousCandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
 import com.binance.client.model.event.MarkPriceEvent;
@@ -85,7 +85,7 @@ public interface SubscriptionClient {
      *                     or error happen between client and Binance server.
      */
     void subscribeCandlestickEvent(String symbol, CandlestickInterval interval,
-            SubscriptionListener<CandlestickEvent> callback, SubscriptionErrorHandler errorHandler);
+            SubscriptionListener<SpotCandlestickEvent> callback, SubscriptionErrorHandler errorHandler);
     
     
     /**

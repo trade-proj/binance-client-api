@@ -12,7 +12,7 @@ import com.binance.client.impl.utils.JsonWrapper;
 import com.binance.client.impl.utils.JsonWrapperArray;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
-import com.binance.client.model.event.CandlestickEvent;
+import com.binance.client.model.event.SpotCandlestickEvent;
 import com.binance.client.model.event.ContinousCandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
 import com.binance.client.model.event.MarkPriceEvent;
@@ -88,7 +88,7 @@ class WebsocketRequestImpl {
   }
 
   WebsocketClientImpl subscribeCandlestickEvent(String symbol, CandlestickInterval interval,
-    SubscriptionListener<CandlestickEvent> subscriptionListener,
+    SubscriptionListener<SpotCandlestickEvent> subscriptionListener,
     SubscriptionErrorHandler errorHandler) {
     InputChecker.checker()
       .shouldNotNull(symbol, "symbol")
@@ -97,7 +97,7 @@ class WebsocketRequestImpl {
     WebsocketClientImpl wsclient = new WebsocketClientImpl();
     wsclient.klineStream(symbol, interval.getCode(), noopCallback, ((event) -> {
       JsonWrapper jsonWrapper = JsonWrapper.parseFromString(event);
-      CandlestickEvent result = new CandlestickEvent();
+      SpotCandlestickEvent result = new SpotCandlestickEvent();
       result.setEventType(jsonWrapper.getString("e"));
       result.setEventTime(jsonWrapper.getLong("E"));
       result.setSymbol(jsonWrapper.getString("s"));

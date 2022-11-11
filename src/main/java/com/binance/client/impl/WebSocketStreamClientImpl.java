@@ -10,7 +10,7 @@ import com.binance.client.SubscriptionListener;
 import com.binance.client.SubscriptionOptions;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
-import com.binance.client.model.event.CandlestickEvent;
+import com.binance.client.model.event.SpotCandlestickEvent;
 import com.binance.client.model.event.ContinousCandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
 import com.binance.client.model.event.MarkPriceEvent;
@@ -78,7 +78,7 @@ public class WebSocketStreamClientImpl implements SubscriptionClient {
 
   @Override
   public void subscribeCandlestickEvent(String symbol, CandlestickInterval interval,
-    SubscriptionListener<CandlestickEvent> subscriptionListener,
+    SubscriptionListener<SpotCandlestickEvent> subscriptionListener,
     SubscriptionErrorHandler errorHandler) {
     requestImpl.subscribeCandlestickEvent(symbol, interval, subscriptionListener, errorHandler);
   }
