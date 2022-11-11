@@ -9,6 +9,6 @@ public class GetBalance {
     RequestOptions options = new RequestOptions();
     SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
       options);
-    System.out.println(syncRequestClient.getBalance().stream().filter(bal -> bal.getAsset().equals("USDT")).findFirst().get());
+    System.out.println(syncRequestClient.getBalance().stream().filter(bal -> bal.getAsset().equalsIgnoreCase("busd")).findFirst().get());
   }
 }

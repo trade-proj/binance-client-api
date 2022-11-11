@@ -6,7 +6,7 @@ import com.binance.client.impl.BinanceApiInternalFactory;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
 import com.binance.client.model.event.CandlestickEvent;
-import com.binance.client.model.event.ContrinousCandlestickEvent;
+import com.binance.client.model.event.ContinousCandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
 import com.binance.client.model.event.MarkPriceEvent;
 import com.binance.client.model.event.OrderBookEvent;
@@ -101,7 +101,7 @@ public interface SubscriptionClient {
      *                     or error happen between client and Binance server.
      */
     void subscribeContinousCandlestickEvent(String symbol, String contractType, CandlestickInterval interval,
-            SubscriptionListener<ContrinousCandlestickEvent> callback, SubscriptionErrorHandler errorHandler);
+            SubscriptionListener<ContinousCandlestickEvent> callback, SubscriptionErrorHandler errorHandler);
 
     /**
      * Subscribe individual symbol mini ticker event. If the symbol mini ticker is updated,

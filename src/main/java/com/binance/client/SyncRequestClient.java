@@ -1,13 +1,41 @@
 package com.binance.client;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 import com.binance.client.impl.BinanceApiInternalFactory;
 import com.binance.client.model.ResponseResult;
-import com.binance.client.model.market.*;
-import com.binance.client.model.enums.*;
-import com.binance.client.model.trade.*;
-
-import java.util.List;
+import com.binance.client.model.enums.CandlestickInterval;
+import com.binance.client.model.enums.IncomeType;
+import com.binance.client.model.enums.NewOrderRespType;
+import com.binance.client.model.enums.OrderSide;
+import com.binance.client.model.enums.OrderType;
+import com.binance.client.model.enums.PeriodType;
+import com.binance.client.model.enums.PositionSide;
+import com.binance.client.model.enums.TimeInForce;
+import com.binance.client.model.enums.WorkingType;
+import com.binance.client.model.market.AggregateTrade;
+import com.binance.client.model.market.Candlestick;
+import com.binance.client.model.market.CommonLongShortRatio;
+import com.binance.client.model.market.ExchangeInformation;
+import com.binance.client.model.market.FundingRate;
+import com.binance.client.model.market.LiquidationOrder;
+import com.binance.client.model.market.MarkPrice;
+import com.binance.client.model.market.OpenInterestStat;
+import com.binance.client.model.market.OrderBook;
+import com.binance.client.model.market.PriceChangeTicker;
+import com.binance.client.model.market.SymbolOrderBook;
+import com.binance.client.model.market.SymbolPrice;
+import com.binance.client.model.market.TakerLongShortStat;
+import com.binance.client.model.market.Trade;
+import com.binance.client.model.trade.AccountBalance;
+import com.binance.client.model.trade.AccountInformation;
+import com.binance.client.model.trade.Income;
+import com.binance.client.model.trade.Leverage;
+import com.binance.client.model.trade.MyTrade;
+import com.binance.client.model.trade.Order;
+import com.binance.client.model.trade.PositionRisk;
+import com.binance.client.model.trade.WalletDeltaLog;
 
 /**
  * Synchronous request interface, invoking Binance RestAPI via synchronous
@@ -19,323 +47,333 @@ import java.util.List;
  */
 public interface SyncRequestClient {
 
-    /**
-     * Create the synchronous client. All interfaces defined in synchronous client
-     * are implemented by synchronous mode.
-     *
-     * @return The instance of synchronous client.
-     */
-    static SyncRequestClient create() {
-        return create("", "", new RequestOptions());
-    }
+  /**
+   * Create the synchronous client. All interfaces defined in synchronous client
+   * are implemented by synchronous mode.
+   *
+   * @return The instance of synchronous client.
+   */
+  static SyncRequestClient create() {
+    return create("", "", new RequestOptions());
+  }
 
-    /**
-     * Create the synchronous client. All interfaces defined in synchronous client
-     * are implemented by synchronous mode.
-     *
-     * @param apiKey    The public key applied from binance.
-     * @param secretKey The private key applied from binance.
-     * @return The instance of synchronous client.
-     */
-    static SyncRequestClient create(String apiKey, String secretKey) {
-        return BinanceApiInternalFactory.getInstance().createSyncRequestClient(apiKey, secretKey, new RequestOptions());
-    }
+  /**
+   * Create the synchronous client. All interfaces defined in synchronous client
+   * are implemented by synchronous mode.
+   *
+   * @param apiKey    The public key applied from binance.
+   * @param secretKey The private key applied from binance.
+   * @return The instance of synchronous client.
+   */
+  static SyncRequestClient create(String apiKey, String secretKey) {
+    return BinanceApiInternalFactory.getInstance().createSyncRequestClient(apiKey, secretKey, new RequestOptions());
+  }
 
-    /**
-     * Create the synchronous client. All interfaces defined in synchronous client
-     * are implemented by synchronous mode.
-     *
-     * @param apiKey    The public key applied from binance.
-     * @param secretKey The private key applied from binance.
-     * @param options   The request option.
-     * @return The instance of synchronous client.
-     */
-    static SyncRequestClient create(String apiKey, String secretKey, RequestOptions options) {
-        return BinanceApiInternalFactory.getInstance().createSyncRequestClient(apiKey, secretKey, options);
-    }
+  /**
+   * Create the synchronous client. All interfaces defined in synchronous client
+   * are implemented by synchronous mode.
+   *
+   * @param apiKey    The public key applied from binance.
+   * @param secretKey The private key applied from binance.
+   * @param options   The request option.
+   * @return The instance of synchronous client.
+   */
+  static SyncRequestClient create(String apiKey, String secretKey, RequestOptions options) {
+    return BinanceApiInternalFactory.getInstance().createSyncRequestClient(apiKey, secretKey, options);
+  }
 
+  /**
+   * Fetch current exchange trading rules and symbol information.
+   *
+   * @return Current exchange trading rules and symbol information.
+   */
+  ExchangeInformation getExchangeInformation();
 
-    /**
-     * Fetch current exchange trading rules and symbol information.
-     *
-     * @return Current exchange trading rules and symbol information.
-     */
-    ExchangeInformation getExchangeInformation();
+  /**
+   * Fetch order book.
+   *
+   * @return Order book.
+   */
+  OrderBook getOrderBook(String symbol, Integer limit);
 
-    /**
-     * Fetch order book.
-     *
-     * @return Order book.
-     */
-    OrderBook getOrderBook(String symbol, Integer limit);
+  /**
+   * Get recent trades.
+   *
+   * @return Recent trades.
+   */
+  List<Trade> getRecentTrades(String symbol, Integer limit);
 
-    /**
-     * Get recent trades.
-     *
-     * @return Recent trades.
-     */
-    List<Trade> getRecentTrades(String symbol, Integer limit);
+  /**
+   * Get old Trade.
+   *
+   * @return Old trades.
+   */
+  List<Trade> getOldTrades(String symbol, Integer limit, Long fromId);
 
-    /**
-     * Get old Trade.
-     *
-     * @return Old trades.
-     */
-    List<Trade> getOldTrades(String symbol, Integer limit, Long fromId);
+  /**
+   * Get compressed, aggregate trades.
+   *
+   * @return Aggregate trades.
+   */
+  List<AggregateTrade> getAggregateTrades(String symbol, Long fromId, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Get compressed, aggregate trades.
-     *
-     * @return Aggregate trades.
-     */
-    List<AggregateTrade> getAggregateTrades(String symbol, Long fromId, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get kline/candlestick bars for a symbol.
+   *
+   * @return Kline/candlestick bars for a symbol.
+   */
+  List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Get kline/candlestick bars for a symbol.
-     *
-     * @return Kline/candlestick bars for a symbol.
-     */
-    List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get kline/candlestick bars for a spot symbol.
+   *
+   * @return Kline/candlestick bars for a symbol.
+   */
+  List<Candlestick> getCandlestickSpot(String symbol, CandlestickInterval interval, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Get mark price for a symbol.
-     *
-     * @return Mark price for a symbol.
-     */
-    List<MarkPrice> getMarkPrice(String symbol);
+  /**
+   * Get mark price for a symbol.
+   *
+   * @return Mark price for a symbol.
+   */
+  List<MarkPrice> getMarkPrice(String symbol);
 
-    /**
-     * Get funding rate history.
-     *
-     * @return funding rate history.
-     */
-    List<FundingRate> getFundingRate(String symbol, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get funding rate history.
+   *
+   * @return funding rate history.
+   */
+  List<FundingRate> getFundingRate(String symbol, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Get 24 hour rolling window price change statistics.
-     *
-     * @return 24 hour rolling window price change statistics.
-     */
-    List<PriceChangeTicker> get24hrTickerPriceChange(String symbol);
+  /**
+   * Get 24 hour rolling window price change statistics.
+   *
+   * @return 24 hour rolling window price change statistics.
+   */
+  List<PriceChangeTicker> get24hrTickerPriceChange(String symbol);
 
-    /**
-     * Get latest price for a symbol or symbols.
-     *
-     * @return Latest price for a symbol or symbols.
-     */
-    List<SymbolPrice> getSymbolPriceTicker(String symbol);
+  /**
+   * Get latest price for a symbol or symbols.
+   *
+   * @return Latest price for a symbol or symbols.
+   */
+  List<SymbolPrice> getSymbolPriceTicker(String symbol);
 
-    /**
-     * Get best price/qty on the order book for a symbol or symbols.
-     *
-     * @return Best price/qty on the order book for a symbol or symbols.
-     */
-    List<SymbolOrderBook> getSymbolOrderBookTicker(String symbol);
+  /**
+   * Get best price/qty on the order book for a symbol or symbols.
+   *
+   * @return Best price/qty on the order book for a symbol or symbols.
+   */
+  List<SymbolOrderBook> getSymbolOrderBookTicker(String symbol);
 
-    /**
-     * Get all liquidation orders.
-     *
-     * @return All liquidation orders.
-     */
-    List<LiquidationOrder> getLiquidationOrders(String symbol, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get all liquidation orders.
+   *
+   * @return All liquidation orders.
+   */
+  List<LiquidationOrder> getLiquidationOrders(String symbol, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Place new orders
-     * @param batchOrders
-     * @return
-     */
-    List<Object> postBatchOrders(String batchOrders);
-    
-    /**
-     * Send in a new order.
-     *
-     * @return Order.
-     */
-    Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
-            TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType);
+  /**
+   * Place new orders
+   * 
+   * @param batchOrders
+   * @return
+   */
+  List<Object> postBatchOrders(String batchOrders);
 
-    /**
-     * Cancel an active order.
-     *
-     * @return Order.
-     */
-    Order cancelOrder(String symbol, Long orderId, String origClientOrderId);
+  /**
+   * Send in a new order.
+   *
+   * @return Order.
+   */
+  Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
+    TimeInForce timeInForce, String quantity, String price, String reduceOnly,
+    String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType);
 
-    /**
-     * Cancel all open orders.
-     *
-     * @return ResponseResult.
-     */
-    ResponseResult cancelAllOpenOrder(String symbol);
+  /**
+   * Cancel an active order.
+   *
+   * @return Order.
+   */
+  Order cancelOrder(String symbol, Long orderId, String origClientOrderId);
 
-    /**
-     * Batch cancel orders.
-     *
-     * @return Order.
-     */
-    List<Object> batchCancelOrders(String symbol, String orderIdList, String origClientOrderIdList);
+  /**
+   * Cancel all open orders.
+   *
+   * @return ResponseResult.
+   */
+  ResponseResult cancelAllOpenOrder(String symbol);
 
-    /**
-     * Switch position side. (true == dual, false == both)
-     *
-     * @return ResponseResult.
-     */
-    ResponseResult changePositionSide(boolean dual);
+  /**
+   * Batch cancel orders.
+   *
+   * @return Order.
+   */
+  List<Object> batchCancelOrders(String symbol, String orderIdList, String origClientOrderIdList);
 
-    /**
-     * Change margin type (ISOLATED, CROSSED)
-     * @param symbolName
-     * @param marginType
-     * @return
-     */
-    ResponseResult changeMarginType(String symbolName, String marginType);
+  /**
+   * Switch position side. (true == dual, false == both)
+   *
+   * @return ResponseResult.
+   */
+  ResponseResult changePositionSide(boolean dual);
 
-    /**
-     * add isolated position margin
-     * @param symbolName
-     * @param type
-     * @param amount
-     * @param positionSide SHORT, LONG, BOTH
-     * @return
-     */
-    JSONObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide);
+  /**
+   * Change margin type (ISOLATED, CROSSED)
+   * 
+   * @param symbolName
+   * @param marginType
+   * @return
+   */
+  ResponseResult changeMarginType(String symbolName, String marginType);
 
-    /**
-     *  get position margin history
-     * @param symbolName
-     * @param type
-     * @param startTime
-     * @param endTime
-     * @param limit
-     * @return
-     */
-    List<WalletDeltaLog> getPositionMarginHistory(String symbolName, int type, long startTime, long endTime, int limit);
+  /**
+   * add isolated position margin
+   * 
+   * @param symbolName
+   * @param type
+   * @param amount
+   * @param positionSide SHORT, LONG, BOTH
+   * @return
+   */
+  JSONObject addIsolatedPositionMargin(String symbolName, int type, String amount, PositionSide positionSide);
 
-    /**
-     * Get if changed to HEDGE mode. (true == hedge mode, false == one-way mode)
-     *
-     * @return ResponseResult.
-     */
-    JSONObject getPositionSide();
+  /**
+   * get position margin history
+   * 
+   * @param symbolName
+   * @param type
+   * @param startTime
+   * @param endTime
+   * @param limit
+   * @return
+   */
+  List<WalletDeltaLog> getPositionMarginHistory(String symbolName, int type, long startTime, long endTime, int limit);
 
-    /**
-     * Check an order's status.
-     *
-     * @return Order status.
-     */
-    Order getOrder(String symbol, Long orderId, String origClientOrderId);
+  /**
+   * Get if changed to HEDGE mode. (true == hedge mode, false == one-way mode)
+   *
+   * @return ResponseResult.
+   */
+  JSONObject getPositionSide();
 
-    /**
-     * Get all open orders on a symbol. Careful when accessing this with no symbol.
-     *
-     * @return Open orders.
-     */
-    List<Order> getOpenOrders(String symbol);
+  /**
+   * Check an order's status.
+   *
+   * @return Order status.
+   */
+  Order getOrder(String symbol, Long orderId, String origClientOrderId);
 
-    /**
-     * Get all account orders; active, canceled, or filled.
-     *
-     * @return All orders.
-     */
-    List<Order> getAllOrders(String symbol, Long orderId, Long startTime, Long endTime, Integer limit);
-  
-    /**
-     * Get account balances.
-     *
-     * @return Balances.
-     */
-    List<AccountBalance> getBalance();
-  
-    /**
-     * Get current account information.
-     *
-     * @return Current account information.
-     */
-    AccountInformation getAccountInformation();
-  
-    /**
-     * Change initial leverage.
-     *
-     * @return Leverage.
-     */
-    Leverage changeInitialLeverage(String symbol, Integer leverage);
+  /**
+   * Get all open orders on a symbol. Careful when accessing this with no symbol.
+   *
+   * @return Open orders.
+   */
+  List<Order> getOpenOrders(String symbol);
 
-    /**
-     * Get position.
-     *
-     * @return Position.
-     */
-    List<PositionRisk> getPositionRisk();
+  /**
+   * Get all account orders; active, canceled, or filled.
+   *
+   * @return All orders.
+   */
+  List<Order> getAllOrders(String symbol, Long orderId, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Get trades for a specific account and symbol.
-     *
-     * @return Trades.
-     */
-    List<MyTrade> getAccountTrades(String symbol, Long startTime, Long endTime, Long fromId, Integer limit);
+  /**
+   * Get account balances.
+   *
+   * @return Balances.
+   */
+  List<AccountBalance> getBalance();
 
-    /**
-     * Get income history.
-     *
-     * @return Income history.
-     */
-    List<Income> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get current account information.
+   *
+   * @return Current account information.
+   */
+  AccountInformation getAccountInformation();
 
-    /**
-     * Start user data stream.
-     *
-     * @return listenKey.
-     */
-    String startUserDataStream();
+  /**
+   * Change initial leverage.
+   *
+   * @return Leverage.
+   */
+  Leverage changeInitialLeverage(String symbol, Integer leverage);
 
-    /**
-     * Keep user data stream.
-     *
-     * @return null.
-     */
-    String keepUserDataStream(String listenKey);
+  /**
+   * Get position.
+   *
+   * @return Position.
+   */
+  List<PositionRisk> getPositionRisk();
 
-    /**
-     * Close user data stream.
-     *
-     * @return null.
-     */
-    String closeUserDataStream(String listenKey);
+  /**
+   * Get trades for a specific account and symbol.
+   *
+   * @return Trades.
+   */
+  List<MyTrade> getAccountTrades(String symbol, Long startTime, Long endTime, Long fromId, Integer limit);
 
-    /**
-     * Open Interest Stat (MARKET DATA)
-     *
-     * @return Open Interest Stat.
-     */
-    List<OpenInterestStat> getOpenInterestStat(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+  /**
+   * Get income history.
+   *
+   * @return Income history.
+   */
+  List<Income> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime, Integer limit);
 
-    /**
-     * Top Trader Long/Short Ratio (Accounts) (MARKET DATA)
-     *
-     * @return Top Trader Long/Short Ratio (Accounts).
-     */
-    List<CommonLongShortRatio> getTopTraderAccountRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+  /**
+   * Start user data stream.
+   *
+   * @return listenKey.
+   */
+  String startUserDataStream();
 
-    /**
-     * Top Trader Long/Short Ratio (Positions) (MARKET DATA)
-     *
-     * @return Top Trader Long/Short Ratio (Positions).
-     */
-    List<CommonLongShortRatio> getTopTraderPositionRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+  /**
+   * Keep user data stream.
+   *
+   * @return null.
+   */
+  String keepUserDataStream(String listenKey);
 
-    /**
-     * Long/Short Ratio (MARKET DATA)
-     *
-     * @return global Long/Short Ratio. 
-     */
-    List<CommonLongShortRatio> getGlobalAccountRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+  /**
+   * Close user data stream.
+   *
+   * @return null.
+   */
+  String closeUserDataStream(String listenKey);
 
-    /**
-     * Taker Long/Short Ratio (MARKET DATA)
-     *
-     * @return Taker Long/Short Ratio. 
-     */
-    List<TakerLongShortStat> getTakerLongShortRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+  /**
+   * Open Interest Stat (MARKET DATA)
+   *
+   * @return Open Interest Stat.
+   */
+  List<OpenInterestStat> getOpenInterestStat(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+
+  /**
+   * Top Trader Long/Short Ratio (Accounts) (MARKET DATA)
+   *
+   * @return Top Trader Long/Short Ratio (Accounts).
+   */
+  List<CommonLongShortRatio> getTopTraderAccountRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+
+  /**
+   * Top Trader Long/Short Ratio (Positions) (MARKET DATA)
+   *
+   * @return Top Trader Long/Short Ratio (Positions).
+   */
+  List<CommonLongShortRatio> getTopTraderPositionRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+
+  /**
+   * Long/Short Ratio (MARKET DATA)
+   *
+   * @return global Long/Short Ratio.
+   */
+  List<CommonLongShortRatio> getGlobalAccountRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
+
+  /**
+   * Taker Long/Short Ratio (MARKET DATA)
+   *
+   * @return Taker Long/Short Ratio.
+   */
+  List<TakerLongShortStat> getTakerLongShortRatio(String symbol, PeriodType period, Long startTime, Long endTime, Integer limit);
 
 }

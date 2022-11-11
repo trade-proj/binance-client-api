@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.binance.client.constant.BinanceApiConstants;
 
-public class ContrinousCandlestickEvent {
+public class ContinousCandlestickEvent {
 
   private String eventType;
 

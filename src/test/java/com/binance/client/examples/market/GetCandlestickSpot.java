@@ -1,16 +1,17 @@
-package com.binance.client.examples.trade;
+package com.binance.client.examples.market;
 
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.examples.constants.PrivateConfig;
+import com.binance.client.model.enums.CandlestickInterval;
 
-public class GetOpenOrders {
+public class GetCandlestickSpot {
 
   public static void main(String[] args) {
     RequestOptions options = new RequestOptions();
     SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
       options);
-    System.out.println(syncRequestClient.getOpenOrders("ETHUSDT"));
-    // System.out.println(syncRequestClient.getOpenOrders(null));
+    System.out.println(syncRequestClient.getCandlestickSpot("ETHBTC", CandlestickInterval.DAILY, null, null, 2).get(0));
   }
+
 }

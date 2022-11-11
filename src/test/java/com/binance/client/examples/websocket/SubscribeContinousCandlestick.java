@@ -7,7 +7,7 @@ public class SubscribeContinousCandlestick {
 
   public static void main(String[] args) throws InterruptedException {
     SubscriptionClient client = SubscriptionClient.create();
-    client.subscribeContinousCandlestickEvent("btcusdt", "perpetual", CandlestickInterval.FIVE_MINUTES, ((event) -> {
+    client.subscribeContinousCandlestickEvent("ETHBTC", "perpetual", CandlestickInterval.FIVE_MINUTES, ((event) -> {
       System.out.println(event);
     }), (error) -> {
       System.out.println(error);

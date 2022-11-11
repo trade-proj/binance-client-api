@@ -6,13 +6,14 @@ import java.util.List;
 
 import com.binance.client.SubscriptionErrorHandler;
 import com.binance.client.SubscriptionListener;
+import com.binance.client.exception.BinanceApiException;
 import com.binance.client.impl.utils.Channels;
 import com.binance.client.impl.utils.JsonWrapper;
 import com.binance.client.impl.utils.JsonWrapperArray;
 import com.binance.client.model.enums.CandlestickInterval;
 import com.binance.client.model.event.AggregateTradeEvent;
 import com.binance.client.model.event.CandlestickEvent;
-import com.binance.client.model.event.ContrinousCandlestickEvent;
+import com.binance.client.model.event.ContinousCandlestickEvent;
 import com.binance.client.model.event.LiquidationOrderEvent;
 import com.binance.client.model.event.MarkPriceEvent;
 import com.binance.client.model.event.OrderBookEvent;
@@ -25,8 +26,13 @@ import com.binance.client.model.user.BalanceUpdate;
 import com.binance.client.model.user.OrderUpdate;
 import com.binance.client.model.user.PositionUpdate;
 import com.binance.client.model.user.UserDataUpdateEvent;
+import com.binance.connector.client.impl.WebsocketClientImpl;
+import com.binance.connector.client.utils.WebSocketCallback;
 
 class WebsocketRequestImpl {
+
+  private final WebSocketCallback noopCallback = msg -> {
+  };
 
   WebsocketRequestImpl() {
   }
@@ -81,17 +87,16 @@ class WebsocketRequestImpl {
     return request;
   }
 
-  WebsocketRequest<CandlestickEvent> subscribeCandlestickEvent(String symbol, CandlestickInterval interval,
+  WebsocketClientImpl subscribeCandlestickEvent(String symbol, CandlestickInterval interval,
     SubscriptionListener<CandlestickEvent> subscriptionListener,
     SubscriptionErrorHandler errorHandler) {
     InputChecker.checker()
       .shouldNotNull(symbol, "symbol")
       .shouldNotNull(subscriptionListener, "listener");
-    WebsocketRequest<CandlestickEvent> request = new WebsocketRequest<>(subscriptionListener, errorHandler);
-    request.name = "***Candlestick for " + symbol + "***";
-    request.connectionHandler = (connection) -> connection.send(Channels.candlestickChannel(symbol, interval));
 
-    request.jsonParser = (jsonWrapper) -> {
+    WebsocketClientImpl wsclient = new WebsocketClientImpl();
+    wsclient.klineStream(symbol, interval.getCode(), noopCallback, ((event) -> {
+      JsonWrapper jsonWrapper = JsonWrapper.parseFromString(event);
       CandlestickEvent result = new CandlestickEvent();
       result.setEventType(jsonWrapper.getString("e"));
       result.setEventTime(jsonWrapper.getLong("E"));
@@ -114,24 +119,26 @@ class WebsocketRequestImpl {
       result.setTakerBuyBaseAssetVolume(jsondata.getBigDecimal("V"));
       result.setTakerBuyQuoteAssetVolume(jsondata.getBigDecimal("Q"));
       result.setIgnore(jsondata.getLong("B"));
-      return result;
-    };
-    return request;
+      subscriptionListener.onReceive(result);
+    }), noopCallback, (error) -> {
+      errorHandler.onError(new BinanceApiException(error, error));
+    });
+    return wsclient;
   }
 
-  WebsocketRequest<ContrinousCandlestickEvent> subscribeConinousCandlestickEvent(String symbol, String contractType, CandlestickInterval interval,
-    SubscriptionListener<ContrinousCandlestickEvent> subscriptionListener,
+  WebsocketRequest<ContinousCandlestickEvent> subscribeConinousCandlestickEvent(String symbol, String contractType, CandlestickInterval interval,
+    SubscriptionListener<ContinousCandlestickEvent> subscriptionListener,
     SubscriptionErrorHandler errorHandler) {
     InputChecker.checker()
       .shouldNotNull(symbol, "symbol")
       .shouldNotNull(contractType, "contractType")
       .shouldNotNull(subscriptionListener, "listener");
-    WebsocketRequest<ContrinousCandlestickEvent> request = new WebsocketRequest<>(subscriptionListener, errorHandler);
+    WebsocketRequest<ContinousCandlestickEvent> request = new WebsocketRequest<>(subscriptionListener, errorHandler);
     request.name = "***Continous Candlestick for " + symbol + "***";
     request.connectionHandler = (connection) -> connection.send(Channels.continuousCandlestickChannel(symbol, contractType, interval));
 
     request.jsonParser = (jsonWrapper) -> {
-      ContrinousCandlestickEvent result = new ContrinousCandlestickEvent();
+      ContinousCandlestickEvent result = new ContinousCandlestickEvent();
       result.setEventType(jsonWrapper.getString("e"));
       result.setEventTime(jsonWrapper.getLong("E"));
       result.setPair(jsonWrapper.getString("ps"));
